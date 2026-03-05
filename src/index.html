@@ -325,7 +325,7 @@
     $('#offerRefuse').onclick = () => {
       if (S.storyOfferChoice) return;
       S.storyOfferChoice = 'refused';
-      S.coins += 500000; S.lifetime += 500000; S.badges.push('Loyalty');
+      S.coins += 500000; S.lifetime += 500000; if (!S.badges.includes('Loyalty')) S.badges.push('Loyalty');
       addHist('You refused the corporate offer. Loyalty badge earned.');
       $('#offerModal').classList.remove('on'); modalBusy = false; update(); save(); showQueued();
     };
@@ -336,6 +336,12 @@
       addHist('Sellout 😔 — You accepted the buyout offer.');
       $('#offerModal').classList.remove('on'); modalBusy = false; update(); save(); showQueued();
     };
+
+    document.addEventListener('keydown', (ev) => {
+      if (ev.key !== 'Escape') return;
+      if ($('#storyModal').classList.contains('on')) { $('#storyModal').classList.remove('on'); modalBusy = false; showQueued(); }
+      else if ($('#offerModal').classList.contains('on')) { $('#offerModal').classList.remove('on'); modalBusy = false; showQueued(); }
+    });
 
     $('#cup').onclick = (e) => {
       const g = cpc();
