@@ -81,6 +81,7 @@
         specials: { goldenCup: false, cafecat: false, roaster: false, safelock: false, hauntedMachine: false },
         storyChaptersSeen: [], storyUnlocked: 1, storyOfferChoice: null,
         safelockLastCollect: 0,
+        lastSeen: Date.now(),
         touristMul: 1, neighborhoodMul: 1, rivalWeak: false, legacyDrink: false, badges: []
       };
     }
@@ -138,14 +139,21 @@
     ];
 
     const S = Object.assign(DS(), JSON.parse(localStorage.getItem(KEY) || '{}'));
-    S.staff = { ...DS().staff, ...(S.staff || {}) };
-    S.equipment = { ...DS().equipment, ...(S.equipment || {}) };
-    S.specials = { ...DS().specials, ...(S.specials || {}) };
-    S.storyChaptersSeen = S.storyChaptersSeen || [];
-    if (!Array.isArray(S.history) && Array.isArray(S.hist)) S.history = S.hist.slice();
-    if (!Array.isArray(S.history)) S.history = [];
-    if (!Array.isArray(S.badges)) S.badges = [];
-    if (typeof S.storyUnlocked !== 'number') S.storyUnlocked = 1;
+
+    function hydrateState(obj = {}) {
+      Object.assign(S, DS(), obj);
+      S.staff = { ...DS().staff, ...(S.staff || {}) };
+      S.equipment = { ...DS().equipment, ...(S.equipment || {}) };
+      S.specials = { ...DS().specials, ...(S.specials || {}) };
+      S.storyChaptersSeen = Array.isArray(S.storyChaptersSeen) ? S.storyChaptersSeen : [];
+      if (!Array.isArray(S.history) && Array.isArray(S.hist)) S.history = S.hist.slice();
+      if (!Array.isArray(S.history)) S.history = [];
+      if (!Array.isArray(S.badges)) S.badges = [];
+      if (typeof S.storyUnlocked !== 'number') S.storyUnlocked = 1;
+      if (typeof S.lastSeen !== 'number') S.lastSeen = Date.now();
+    }
+
+    hydrateState(S);
 
     const feed = $('#feed');
     const story = $('#story');
@@ -156,6 +164,38 @@
     const isNight = () => { const h = new Date().getHours(); return h < 6 || h >= 18; };
     const isHalloween = () => new Date().getMonth() === 9;
     const save = () => localStorage.setItem(KEY, JSON.stringify(S));
+    const defaultState = DS;
+
+    function saveGame() {
+      S.lastSeen = Date.now();
+      save();
+    }
+
+    function applyOfflineEarnings() {
+      const now = Date.now();
+      const elapsedMs = Math.max(0, now - (S.lastSeen || now));
+      const elapsedSec = Math.min(60 * 60 * 8, Math.floor(elapsedMs / 1000));
+      const earned = Math.floor(cps() * elapsedSec);
+      S.lastSeen = now;
+      if (earned > 0) {
+        S.coins += earned;
+        S.lifetime += earned;
+        addHist(`Offline earnings: +${earned.toLocaleString()} coins`);
+      }
+    }
+
+    function loadGame() {
+      try {
+        const raw = JSON.parse(localStorage.getItem(KEY) || '{}');
+        hydrateState(raw);
+      } catch (e) {
+        hydrateState({});
+      }
+      applyOfflineEarnings();
+      checkStoryUnlocks();
+      update();
+      saveGame();
+    }
 
     const addHist = (text) => {
       S.history.unshift(`${new Date().toLocaleTimeString()} ${text}`);
@@ -199,7 +239,7 @@
       S.coins += n; S.lifetime += n;
       checkStoryUnlocks();
       update();
-      save();
+      saveGame();
     }
 
     function renderFeed() {
@@ -253,7 +293,7 @@
       S.coins -= cost; S.staff[id] += 1;
       if (id === 'benny' && S.staff.benny === 3) addHist('Pastry Case decoration unlocked!');
       if (id === 'skye' && S.staff.skye === 5) addHist('Skye unlocked +15% tip multiplier.');
-      save(); update();
+      saveGame(); update();
     }
 
     function buyEquip(key) {
@@ -261,7 +301,7 @@
       if (!next || S.coins < next.cost) return;
       S.coins -= next.cost; S.equipment[key] += 1;
       if (key === 'grinder' && S.equipment.grinder === 3) addHist('Liberica bean unlocked in farm.');
-      save(); update();
+      saveGame(); update();
     }
 
     function buySpecial(id) {
@@ -271,7 +311,7 @@
       addHist(`Purchased ${it.name}.`);
       if (id === 'goldenCup') $('#cup').classList.add('gold');
       if (id === 'cafecat' && !scene.querySelector('.cat')) scene.insertAdjacentHTML('beforeend', '<div class="cat">🐱</div>');
-      save(); update();
+      saveGame(); update();
     }
 
     function renderStory() {
@@ -335,14 +375,14 @@
       S.storyOfferChoice = 'refused';
       S.coins += 500000; S.lifetime += 500000; if (!S.badges.includes('Loyalty')) S.badges.push('Loyalty');
       addHist('You refused the corporate offer. Loyalty badge earned.');
-      $('#offerModal').classList.remove('on'); modalBusy = false; update(); save(); showQueued();
+      $('#offerModal').classList.remove('on'); modalBusy = false; update(); saveGame(); showQueued();
     };
     $('#offerAccept').onclick = () => {
       if (S.storyOfferChoice) return;
       S.storyOfferChoice = 'accepted';
       S.coins += 2000000; S.lifetime += 2000000;
       addHist('Sellout 😔 — You accepted the buyout offer.');
-      $('#offerModal').classList.remove('on'); modalBusy = false; update(); save(); showQueued();
+      $('#offerModal').classList.remove('on'); modalBusy = false; update(); saveGame(); showQueued();
     };
 
     document.addEventListener('keydown', (ev) => {
@@ -391,8 +431,9 @@
       };
     });
 
-    checkStoryUnlocks();
-    update();
+    setInterval(() => saveGame(), 30000);
+    window.addEventListener('beforeunload', saveGame);
+    loadGame();
   </script>
 </body>
 </html>
