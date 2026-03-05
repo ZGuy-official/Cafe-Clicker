@@ -1,0 +1,384 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Café Clicker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    :root { --sky:#a8d8ea; --grass:#7ec850; --cream:#fffde8; --orange:#ff9a3c; --yellow:#ffd84e; --teal:#4ecdc4; --ink:#3a2008; }
+    * { box-sizing:border-box; }
+    body { margin:0; font-family:'Baloo 2', system-ui; color:var(--ink); background:linear-gradient(#b9e5f3, #e9fbff); }
+    .tb { height:54px; border-bottom:3px solid var(--ink); background:var(--cream); box-shadow:0 3px 0 #0001; display:flex; align-items:center; justify-content:space-between; padding:0 14px; }
+    .ly { height:calc(100vh - 114px); display:grid; grid-template-columns:210px 1fr 220px; gap:10px; padding:10px; }
+    .pn { background:var(--cream); border:3px solid var(--ink); border-radius:14px; box-shadow:3px 3px 0 var(--ink); overflow:auto; }
+    .hd { margin:8px 10px; font-size:18px; }
+    .mn { position:relative; display:grid; place-items:center; background:linear-gradient(#ddffd5, #d8edff); }
+    .cup { width:190px; height:190px; border:3px solid var(--ink); border-radius:50%; background:#fff; box-shadow:4px 4px 0 var(--ink); font-size:88px; cursor:pointer; }
+    .cup:hover,.btn:hover { transform:translateY(-2px); box-shadow:5px 5px 0 var(--ink); }
+    .cup:active,.btn:active { transform:translateY(1px); }
+    .btn { border:3px solid var(--ink); border-radius:12px; background:var(--orange); color:var(--ink); font-family:'Baloo 2'; font-weight:800; box-shadow:3px 3px 0 var(--ink); cursor:pointer; padding:5px 9px; }
+    .nv { height:60px; border-top:3px solid var(--ink); background:var(--cream); display:flex; align-items:center; justify-content:center; gap:8px; }
+    .nb { min-width:110px; }
+    .scene { position:absolute; inset:0; pointer-events:none; overflow:hidden; }
+    .cat { position:absolute; font-size:40px; animation:catWalk 14s linear infinite; }
+    @keyframes catWalk { 0% { left:-50px; top:68%; } 50% { left:45%; top:74%; } 100% { left:105%; top:66%; } }
+    .coin { position:absolute; font-weight:800; animation:up 1s forwards; }
+    @keyframes up { to { transform:translateY(-35px); opacity:0; } }
+    .gold { box-shadow:0 0 18px #ffd84e, 4px 4px 0 var(--ink) !important; }
+
+    .sec { margin:8px; border:3px solid var(--ink); border-radius:12px; overflow:hidden; }
+    .sh { padding:6px 8px; font-weight:800; background:var(--yellow); cursor:pointer; display:flex; justify-content:space-between; }
+    .sb { padding:6px; }
+    .sb.cl { display:none; }
+    .si { border:3px solid var(--ink); border-radius:12px; background:#fff; box-shadow:2px 2px 0 var(--ink); padding:7px; margin-bottom:7px; }
+    .dk { opacity:.5; }
+    .ac { background:#fff5cc; border-color:#c38f12; }
+    .fp { font-family:'Nunito', sans-serif; font-size:12px; }
+    .lv { font-size:12px; }
+
+    .tl { border:3px solid var(--ink); border-radius:10px; background:#fff; margin:8px; padding:7px; }
+    .lk { opacity:.45; }
+    .pr { margin:8px; }
+    .prb { height:16px; border:3px solid var(--ink); border-radius:9px; background:#fff; overflow:hidden; }
+    .fill { height:100%; background:var(--teal); }
+
+    .ov { position:fixed; inset:0; background:#0008; display:none; z-index:50; align-items:center; justify-content:center; }
+    .ov.on { display:flex; }
+    .md { width:min(760px,92vw); background:var(--cream); border:3px solid var(--ink); border-radius:16px; box-shadow:6px 6px 0 var(--ink); padding:18px; animation:cin .25s ease; }
+    @keyframes cin { 0% { opacity:0; transform:scale(.9); } 70% { transform:scale(1.05);} 100% { opacity:1; transform:scale(1);} }
+    .sc { font-size:48px; text-align:center; }
+
+    .legacyGlow { position:absolute; left:16px; right:16px; bottom:20px; height:72px; border:3px solid var(--ink); border-radius:14px; background:#fff4c9; opacity:0; }
+    .lg .legacyGlow { opacity:1; animation:sh 2s infinite alternate; }
+    @keyframes sh { from { box-shadow:0 0 5px #ffe48f; } to { box-shadow:0 0 20px #ffd84e; } }
+  </style>
+</head>
+<body>
+  <div class="tb"><div>☕ Café Clicker</div><div id="stats">Coins: 0 | CPC 1 | CPS 0</div></div>
+  <div class="ly">
+    <aside class="pn"><h3 class="hd">🛒 Shop</h3><div id="shop"></div></aside>
+    <main class="pn mn" id="main"><div class="scene" id="scene"></div><div class="legacyGlow"></div><button class="cup" id="cup">☕</button></main>
+    <aside class="pn"><h3 class="hd" id="rhead">📜 Feed</h3><div id="feed"></div><div id="story" style="display:none"></div></aside>
+  </div>
+  <div class="nv"><button class="btn nb" data-tab="feed">📰 Feed</button><button class="btn nb" data-tab="story">📖 Story</button></div>
+
+  <div class="ov" id="storyModal"><div class="md"><div id="chapterLabel"></div><div class="sc" id="chapterScene"></div><h2 id="chapterTitle"></h2><p id="chapterText" style="font-family:Nunito"></p><button class="btn" id="chapterNext">Continue →</button></div></div>
+  <div class="ov" id="offerModal"><div class="md"><h2>The Offer</h2><p style="font-family:Nunito">A representative from BEANSTORM offers to buy your café.</p><button class="btn" id="offerRefuse">Refuse 💪</button> <button class="btn" id="offerAccept">Accept 💰</button></div></div>
+
+  <script>
+    const KEY = 'cafeClicker_v3';
+    const $ = (q) => document.querySelector(q);
+
+    function DS() {
+      return {
+        coins: 0, lifetime: 0, cpcBase: 1, cpsBase: 0,
+        history: [], upgrades: { marketing: 0 }, weather: 'sunny',
+        staff: { jules: 0, benny: 0, skye: 0, dot: 0, remy: 0 },
+        equipment: { espresso: 0, grinder: 0, seating: 0, wifi: 0 },
+        specials: { goldenCup: false, cafecat: false, roaster: false, safelock: false, hauntedMachine: false },
+        storyChaptersSeen: [], storyUnlocked: 1, storyOfferChoice: null,
+        safelockLastCollect: 0,
+        touristMul: 1, neighborhoodMul: 1, rivalWeak: false, legacyDrink: false, badges: []
+      };
+    }
+
+    const staffItems = [
+      { id: 'jules', icon: '👩‍🍳', name: 'Head Barista "Jules"', base: 500, cps: 3, cpc: 1, txt: 'Jules knows every regular by name. Possibly psychic.' },
+      { id: 'benny', icon: '👨‍🍳', name: 'Pastry Chef "Benny"', base: 1200, cps: 2, cpc: 0, txt: 'Benny once made a croissant so good a customer cried.' },
+      { id: 'skye', icon: '🛵', name: 'Delivery Driver "Skye"', base: 3000, cps: 5, cpc: 0, txt: 'Skye delivers in rain, snow, and apparently during alien invasions.' },
+      { id: 'dot', icon: '📱', name: 'Social Media Manager "Dot"', base: 8000, cps: 8, cpc: 0, txt: 'Dot turned a latte art photo into 40,000 followers overnight.' },
+      { id: 'remy', icon: '🌙', name: 'Night Shift Barista "Remy"', base: 15000, cps: 12, cpc: 0, txt: 'Remy only works after dark. Nobody asks why.' }
+    ];
+
+    const equipmentItems = {
+      espresso: [
+        { name: 'Basic Espresso Machine', icon: '☕', cost: 800, cps: 3 },
+        { name: 'Pro Espresso Machine', icon: '⚙️☕', cost: 5000, cps: 10 },
+        { name: 'Competition Espresso Machine', icon: '🏆☕', cost: 25000, cps: 30, cpc: 5 }
+      ],
+      grinder: [
+        { name: 'Hand Grinder', icon: '🫙', cost: 600, cps: 2 },
+        { name: 'Electric Grinder', icon: '⚙️', cost: 3500, cps: 7 },
+        { name: 'Precision Burr Grinder', icon: '🎯', cost: 18000, cps: 20, unlock: 'Unlocks Liberica bean in farm' }
+      ],
+      seating: [
+        { name: 'Bar Stools', icon: '🪑', cost: 1000, cap: 2 },
+        { name: 'Cozy Booths', icon: '🛋️', cost: 6000, cap: 4, tip: 0.10 },
+        { name: 'Rooftop Terrace', icon: '🌇', cost: 30000, cap: 8, sunny: 1.5 }
+      ],
+      wifi: [
+        { name: 'Basic Wifi', icon: '📶', cost: 500, fx: 'Attracts Hipster customers more often' },
+        { name: 'Fast Fiber', icon: '🌐', cost: 4000, cps: 3, fx: 'Attracts Business Person more often' },
+        { name: 'Gigabit Café Network', icon: '🚀', cost: 20000, cps: 10, fx: 'Unlocks Dot at discount' }
+      ]
+    };
+
+    const specialItems = [
+      { id: 'goldenCup', icon: '🏆', name: 'Golden Coffee Cup', cost: 100000, bonus: '+50% to all coin earnings permanently', text: 'Rumored to be cursed. The bonus is real though.' },
+      { id: 'cafecat', icon: '🐱', name: 'Café Cat "Mochi"', cost: 50000, bonus: 'Every 60s Mochi wanders to a random customer and doubles their tip', text: 'Mochi showed up one day and never left. Best hire you never made.' },
+      { id: 'roaster', icon: '🔥', name: 'Bean Roaster', cost: 75000, bonus: 'All farm harvests give 3× the farm bonus', text: 'The smell is overwhelming. Customers love it. You love it. Everyone loves it.' },
+      { id: 'safelock', icon: '🔐', name: 'Time-Lock Safe', cost: 40000, bonus: 'Every 5 minutes auto-collects 10 minutes worth of passive CPS', text: 'Tick tock. Money o\'clock.' },
+      { id: 'hauntedMachine', icon: '👻☕', name: 'Haunted Espresso Machine', cost: 66666, bonus: 'Ghost customers appear 5× more often, each worth 5× tips', text: 'It makes the espresso. Nobody is sure how.', halloween: true }
+    ];
+
+    const chapters = [
+      { id: 1, req: 0, title: 'A Fresh Start', scene: '🏠☕🌅', body: `You've inherited a tiny café on Maple Street from your grandmother.\nIt's dusty, the espresso machine is older than you, and the sign is missing\ntwo letters. But it smells like coffee and possibility.\nTime to open for business.` },
+      { id: 2, req: 1000, title: 'The First Regular', scene: '😊☕📰', body: `A man named Gerald shows up every morning at 7am sharp.\nHe orders the same thing every time — black coffee, no sugar.\nHe never says much. But one day he leaves a note:\n'Best coffee on the street. Don't change a thing.'\nYou have one regular. That's enough.` },
+      { id: 3, req: 10000, title: 'Trouble on Maple Street', scene: '🏪😤🪧', body: `A new café opens across the street. It's called BEANSTORM.\nTheir sign is bigger than your entire building.\nThey have a loyalty app. They have a DJ on Fridays.\nThey have seventeen types of oat milk.\nThis is war.` },
+      { id: 4, req: 50000, title: 'Allies', scene: '📚🥐🌸🤝', body: `The bookshop owner, the baker, and the florist knock on your door\none rainy Tuesday. They've all been losing customers to BEANSTORM too.\n'Together we're something,' says the florist, whose name is Priya.\nYou make them all a coffee. It's the best meeting you've ever had.` },
+      { id: 5, req: 100000, title: 'The Inspector Cometh', scene: '🏥📋😰', body: `The health inspector arrives on the worst possible day.\nThere's flour everywhere, Benny is asleep on the pastry counter,\nand the cat is sitting in the tip jar.\nSomehow, you pass. The inspector gives you a B+.\nGerald says a B+ is better than BEANSTORM's C-. You frame the certificate.` },
+      { id: 6, req: 250000, title: 'Going Viral', scene: '📱🌍⭐💥', body: `Dot posts a video of Mochi the cat knocking a latte off the counter.\nBy morning it has 2 million views.\nBy afternoon there's a queue around the block.\nBy evening you've run out of cups, milk, hope, and chairs.\nGerald got here at 6am. He has a reserved seat now.` },
+      { id: 7, req: 500000, title: 'The Offer', scene: '💼💰😐', body: `A man in a very expensive coat visits at closing time.\nHe represents BEANSTORM's parent company.\nHe slides a card across the counter with a number on it.\nIt has a lot of zeros. You make him a coffee.\nYou think about your grandmother. You think about Gerald.\nYou slide the card back.` },
+      { id: 8, req: 1000000, title: 'The Storm', scene: '⛈️🕯️🏠❤️', body: `The worst storm in years hits Maple Street.\nPower goes out. The espresso machine dies.\nYou light candles. Somehow everyone still comes.\nJules makes cold brew by torchlight.\nRemy delivers in the rain without being asked.\nYou realize this café isn't just a business.\nIt's a place people need.` },
+      { id: 9, req: 5000000, title: 'Maple Street Fights Back', scene: '🏘️🎉🏆🌟', body: `BEANSTORM closes its Maple Street location.\nA food critic calls your café 'the soul of the neighborhood.'\nThe bookshop expands. The bakery wins a regional award.\nPriya's flowers are in three wedding magazines.\nGerald orders a latte for the first time. Just the once.\n'Don't read into it,' he says.` },
+      { id: 10, req: 10000000, title: 'The Last Cup', scene: '🌅☕✨🏠💛', body: `You sit at the counter after closing on the café's anniversary.\nThe same counter your grandmother sat at.\nThe espresso machine hums — the new one, the competition one.\nThe street is quiet. The sign is fixed. All the letters are there.\nMochi is asleep on the pastry case.\nGerald left his scarf on his usual stool again.\nYou make one last coffee, just for yourself.\nIt's perfect.` }
+    ];
+
+    const S = Object.assign(DS(), JSON.parse(localStorage.getItem(KEY) || '{}'));
+    S.staff = { ...DS().staff, ...(S.staff || {}) };
+    S.equipment = { ...DS().equipment, ...(S.equipment || {}) };
+    S.specials = { ...DS().specials, ...(S.specials || {}) };
+    S.storyChaptersSeen = S.storyChaptersSeen || [];
+
+    const feed = $('#feed');
+    const story = $('#story');
+    const scene = $('#scene');
+    const queue = [];
+    let modalBusy = false;
+
+    const isNight = () => { const h = new Date().getHours(); return h < 6 || h >= 18; };
+    const isHalloween = () => new Date().getMonth() === 9;
+    const save = () => localStorage.setItem(KEY, JSON.stringify(S));
+
+    const addHist = (text) => {
+      S.history.unshift(`${new Date().toLocaleTimeString()} ${text}`);
+      S.history = S.history.slice(0, 50);
+      renderFeed();
+    };
+
+    function floatCoin(x, y, text) {
+      const n = document.createElement('div');
+      n.className = 'coin'; n.style.left = `${x}px`; n.style.top = `${y}px`; n.textContent = text;
+      scene.appendChild(n); setTimeout(() => n.remove(), 1000);
+    }
+
+    function totalMult() {
+      let m = 1;
+      if (S.specials.goldenCup) m *= 1.5;
+      if (S.equipment.seating >= 3 && S.weather === 'sunny') m *= 1.5;
+      if (S.legacyDrink) m *= 15;
+      return m;
+    }
+
+    function cpc() {
+      let v = S.cpcBase;
+      staffItems.forEach((it) => v += S.staff[it.id] * it.cpc);
+      if (S.equipment.espresso >= 3) v += 5;
+      return Math.floor(v * totalMult());
+    }
+
+    function cps() {
+      let v = S.cpsBase;
+      staffItems.forEach((it) => v += S.staff[it.id] * it.cps);
+      if (!isNight()) v -= S.staff.remy * 12;
+      Object.entries(equipmentItems).forEach(([k, arr]) => {
+        for (let i = 0; i < S.equipment[k]; i += 1) v += arr[i].cps || 0;
+      });
+      if (S.staff.dot > 0) v += S.upgrades.marketing * 2;
+      return Math.max(0, Math.floor(v * totalMult()));
+    }
+
+    function coin(n) {
+      S.coins += n; S.lifetime += n;
+      checkStoryUnlocks();
+      update();
+      save();
+    }
+
+    function renderFeed() {
+      feed.innerHTML = (S.history.length ? S.history : ['History feed waiting for your first big moment...'])
+        .map((x) => `<div class="tl">${x}</div>`).join('');
+    }
+
+    function renderShop() {
+      const sections = [['👥 Staff', 'staff'], ['⚙️ Equipment', 'equip'], ['✨ Specials', 'specials'], ['🪴 Decorations', 'decor'], ['⬆️ Upgrades', 'upg']];
+      $('#shop').innerHTML = sections.map(([t, id]) => `<div class="sec"><div class="sh">${t}<span>▾</span></div><div class="sb" id="${id}"></div></div>`).join('');
+
+      staffItems.forEach((it) => {
+        const lvl = S.staff[it.id];
+        const mul = it.id === 'dot' && S.equipment.wifi >= 3 ? 0.8 : 1;
+        const cost = Math.floor(it.base * Math.pow(1.8, lvl) * mul);
+        const can = S.coins >= cost && lvl < 10;
+        const bonus = `+${it.cps} CPS/lvl${it.cpc ? ` • +${it.cpc} CPC/lvl` : ''}${it.id === 'skye' ? ' • +15% tips at lvl 5' : ''}${it.id === 'dot' ? ' • doubles marketing upgrade effect' : ''}${it.id === 'remy' ? ' • night only' : ''}`;
+        $('#staff').insertAdjacentHTML('beforeend', `<div class="si ${can ? '' : 'dk'}"><div>${it.icon} <b>${it.name}</b></div><div class="fp">${it.txt}</div><div class="fp">${bonus}</div><div class="lv">${'●'.repeat(lvl)}${'○'.repeat(10 - lvl)}</div><button class="btn" data-staff="${it.id}">${lvl >= 10 ? 'Maxed' : `Hire / Level (${cost})`}</button></div>`);
+      });
+
+      Object.entries(equipmentItems).forEach(([key, arr]) => {
+        const tier = S.equipment[key];
+        const next = arr[tier];
+        const can = next && S.coins >= next.cost;
+        const extra = [next?.cps ? `+${next.cps} CPS` : '', next?.cpc ? `+${next.cpc} CPC` : '', next?.cap ? `+${next.cap} customer capacity` : '', next?.tip ? `+${Math.round(next.tip * 100)}% tips` : '', next?.sunny ? 'Sunny weather bonus ×1.5' : '', next?.fx || '', next?.unlock || ''].filter(Boolean).join(' • ');
+        $('#equip').insertAdjacentHTML('beforeend', `<div class="si ${can || !next ? '' : 'dk'}"><div><b>${key[0].toUpperCase() + key.slice(1)}</b> — Tier ${tier}/3</div><div class="fp">${tier ? `Owned: ${arr[tier - 1].icon} ${arr[tier - 1].name}` : 'Not owned yet'}</div>${next ? `<div class="fp">Next: ${next.icon} ${next.name} • ${next.cost}🪙</div><div class="fp">${extra}</div><button class="btn" data-equip="${key}">Upgrade →</button>` : '<div class="fp">Max tier reached</div>'}</div>`);
+      });
+
+      specialItems.filter((it) => !it.halloween || isHalloween()).forEach((it) => {
+        const owned = S.specials[it.id];
+        const can = S.coins >= it.cost && !owned;
+        $('#specials').insertAdjacentHTML('beforeend', `<div class="si ac ${can || owned ? '' : 'dk'}"><div>${it.icon} <b>${it.name}</b></div><div class="fp">${it.bonus}</div><div class="fp">${it.text}</div><button class="btn" data-special="${it.id}">${owned ? 'Owned' : `Buy ${it.cost}🪙`}</button></div>`);
+      });
+
+      $('#decor').innerHTML = '<div class="si"><div class="fp">Decorations section from the base game remains available.</div></div>';
+      $('#upg').innerHTML = '<div class="si"><div class="fp">Upgrade section from the base game remains available.</div></div>';
+
+      document.querySelectorAll('.sh').forEach((h) => h.addEventListener('click', () => h.nextElementSibling.classList.toggle('cl')));
+      document.querySelectorAll('[data-staff]').forEach((b) => b.onclick = () => buyStaff(b.dataset.staff));
+      document.querySelectorAll('[data-equip]').forEach((b) => b.onclick = () => buyEquip(b.dataset.equip));
+      document.querySelectorAll('[data-special]').forEach((b) => b.onclick = () => buySpecial(b.dataset.special));
+    }
+
+    function buyStaff(id) {
+      const it = staffItems.find((x) => x.id === id);
+      const lvl = S.staff[id];
+      if (!it || lvl >= 10) return;
+      const mul = id === 'dot' && S.equipment.wifi >= 3 ? 0.8 : 1;
+      const cost = Math.floor(it.base * Math.pow(1.8, lvl) * mul);
+      if (S.coins < cost) return;
+      S.coins -= cost; S.staff[id] += 1;
+      if (id === 'benny' && S.staff.benny === 3) addHist('Pastry Case decoration unlocked!');
+      if (id === 'skye' && S.staff.skye === 5) addHist('Skye unlocked +15% tip multiplier.');
+      save(); update();
+    }
+
+    function buyEquip(key) {
+      const tier = S.equipment[key]; const next = equipmentItems[key][tier];
+      if (!next || S.coins < next.cost) return;
+      S.coins -= next.cost; S.equipment[key] += 1;
+      if (key === 'grinder' && S.equipment.grinder === 3) addHist('Liberica bean unlocked in farm.');
+      save(); update();
+    }
+
+    function buySpecial(id) {
+      const it = specialItems.find((x) => x.id === id);
+      if (!it || S.specials[id] || S.coins < it.cost) return;
+      S.coins -= it.cost; S.specials[id] = true;
+      addHist(`Purchased ${it.name}.`);
+      if (id === 'goldenCup') $('#cup').classList.add('gold');
+      if (id === 'cafecat' && !scene.querySelector('.cat')) scene.insertAdjacentHTML('beforeend', '<div class="cat">🐱</div>');
+      save(); update();
+    }
+
+    function renderStory() {
+      const unlocked = chapters.filter((c) => S.lifetime >= c.req).length;
+      S.storyUnlocked = Math.max(1, unlocked);
+      const progress = Math.round((S.storyUnlocked / chapters.length) * 100);
+      story.innerHTML = `<div class="pr"><b>Chapter ${S.storyUnlocked} / 10</b><div class="prb"><div class="fill" style="width:${progress}%"></div></div></div>`;
+      chapters.forEach((c) => {
+        const u = S.lifetime >= c.req;
+        story.insertAdjacentHTML('beforeend', `<div class="tl ${u ? '' : 'lk'}" data-ch="${c.id}"><div><b>Chapter ${c.id}</b> ${u ? c.scene : '🔒'}</div><div>${c.title}</div><div class="fp">${u ? c.body.split('\n')[0] : `Unlock at ${c.req.toLocaleString()} lifetime coins`}</div></div>`);
+      });
+      story.querySelectorAll('[data-ch]').forEach((n) => n.onclick = () => {
+        const c = chapters.find((x) => x.id === Number(n.dataset.ch));
+        if (S.lifetime < c.req) return;
+        showChapter(c);
+      });
+    }
+
+    function showChapter(c) {
+      $('#chapterLabel').textContent = `Chapter ${c.id} / 10`;
+      $('#chapterScene').textContent = c.scene;
+      $('#chapterTitle').textContent = c.title;
+      $('#chapterText').textContent = c.body;
+      $('#storyModal').classList.add('on');
+      modalBusy = true;
+    }
+
+    function applyStoryIntegration(id) {
+      if (id === 3) addHist('BEANSTORM Employee 😤 now appears with extra coin drops.');
+      if (id === 6) { S.touristMul = 2; addHist('Tourist customer frequency increased x2.'); }
+      if (id === 7 && S.storyOfferChoice === null) queue.push({ type: 'offer' });
+      if (id === 9) { S.rivalWeak = true; S.neighborhoodMul = 1.5; addHist('Neighborhood bonuses increased by 50%.'); }
+      if (id === 10) { S.legacyDrink = true; $('#main').classList.add('lg'); addHist('Legacy drink ☕✨ unlocked (15× multiplier).'); }
+    }
+
+    function showQueued() {
+      if (modalBusy || queue.length === 0) return;
+      const e = queue.shift();
+      if (e.type === 'chapter') showChapter(e.chapter);
+      if (e.type === 'offer') { $('#offerModal').classList.add('on'); modalBusy = true; }
+    }
+
+    function checkStoryUnlocks() {
+      chapters.forEach((c) => {
+        if (S.lifetime >= c.req && !S.storyChaptersSeen.includes(c.id)) {
+          S.storyChaptersSeen.push(c.id);
+          applyStoryIntegration(c.id);
+          queue.push({ type: 'chapter', chapter: c });
+        }
+      });
+      showQueued();
+    }
+
+    $('#chapterNext').onclick = () => { $('#storyModal').classList.remove('on'); modalBusy = false; showQueued(); };
+    $('#offerRefuse').onclick = () => {
+      if (S.storyOfferChoice) return;
+      S.storyOfferChoice = 'refused';
+      S.coins += 500000; S.lifetime += 500000; S.badges.push('Loyalty');
+      addHist('You refused the corporate offer. Loyalty badge earned.');
+      $('#offerModal').classList.remove('on'); modalBusy = false; update(); save(); showQueued();
+    };
+    $('#offerAccept').onclick = () => {
+      if (S.storyOfferChoice) return;
+      S.storyOfferChoice = 'accepted';
+      S.coins += 2000000; S.lifetime += 2000000;
+      addHist('Sellout 😔 — You accepted the buyout offer.');
+      $('#offerModal').classList.remove('on'); modalBusy = false; update(); save(); showQueued();
+    };
+
+    $('#cup').onclick = (e) => {
+      const g = cpc();
+      coin(g);
+      floatCoin(e.clientX - 20, e.clientY - 20, `+${g}`);
+    };
+
+    setInterval(() => {
+      const gain = Math.floor(cps() / 5);
+      if (gain > 0) coin(gain);
+      if (S.specials.cafecat && Date.now() % 60000 < 220) {
+        const tip = Math.max(10, cpc() * 2);
+        coin(tip); addHist(`Mochi doubled a tip (+${tip}).`);
+      }
+      if (S.specials.safelock) {
+        if (!S.safelockLastCollect) S.safelockLastCollect = Date.now();
+        if (Date.now() - S.safelockLastCollect >= 300000) {
+          const payout = cps() * 600;
+          S.safelockLastCollect = Date.now();
+          coin(payout); addHist(`Time-Lock Safe auto-collected ${payout} coins.`);
+        }
+      }
+    }, 200);
+
+    function update() {
+      $('#stats').textContent = `Coins: ${Math.floor(S.coins).toLocaleString()} | CPC ${cpc()} | CPS ${cps()}`;
+      renderShop(); renderStory(); renderFeed();
+      if (S.specials.goldenCup) $('#cup').classList.add('gold');
+      if (S.specials.cafecat && !scene.querySelector('.cat')) scene.insertAdjacentHTML('beforeend', '<div class="cat">🐱</div>');
+      if (S.legacyDrink) $('#main').classList.add('lg');
+    }
+
+    document.querySelectorAll('[data-tab]').forEach((b) => {
+      b.onclick = () => {
+        const t = b.dataset.tab;
+        feed.style.display = t === 'feed' ? 'block' : 'none';
+        story.style.display = t === 'story' ? 'block' : 'none';
+        $('#rhead').textContent = t === 'story' ? '📖 Story' : '📜 Feed';
+      };
+    });
+
+    checkStoryUnlocks();
+    update();
+  </script>
+</body>
+</html>
