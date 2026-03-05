@@ -142,6 +142,10 @@
     S.equipment = { ...DS().equipment, ...(S.equipment || {}) };
     S.specials = { ...DS().specials, ...(S.specials || {}) };
     S.storyChaptersSeen = S.storyChaptersSeen || [];
+    if (!Array.isArray(S.history) && Array.isArray(S.hist)) S.history = S.hist.slice();
+    if (!Array.isArray(S.history)) S.history = [];
+    if (!Array.isArray(S.badges)) S.badges = [];
+    if (typeof S.storyUnlocked !== 'number') S.storyUnlocked = 1;
 
     const feed = $('#feed');
     const story = $('#story');
@@ -322,6 +326,10 @@
     }
 
     $('#chapterNext').onclick = () => { $('#storyModal').classList.remove('on'); modalBusy = false; showQueued(); };
+    $('#storyModal').addEventListener('click', (ev) => {
+      if (ev.target.id !== 'storyModal') return;
+      $('#storyModal').classList.remove('on'); modalBusy = false; showQueued();
+    });
     $('#offerRefuse').onclick = () => {
       if (S.storyOfferChoice) return;
       S.storyOfferChoice = 'refused';
