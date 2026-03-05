@@ -1,0 +1,12 @@
+{
+  "name": "cafe-clicker",
+  "version": "3.1.0",
+  "description": "Café Clicker desktop idle game",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "devDependencies": {
+    "electron": "28.3.3"
+  }
+}
