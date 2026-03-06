@@ -3,168 +3,171 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Café Clicker</title>
+  <title>Brew Empire</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Nunito:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;700&family=Nunito:wght@500;700&display=swap" rel="stylesheet">
   <style>
-    :root{--sky:#a8d8ea;--grass:#7ec850;--cream:#fffde8;--orange:#ff9a3c;--yellow:#ffd84e;--teal:#4ecdc4;--ink:#3a2008}
-    *{box-sizing:border-box} body{margin:0;font-family:'Baloo 2',system-ui;background:linear-gradient(var(--sky),#d8f3ff);color:var(--ink)}
-    .top{height:54px;background:var(--cream);border-bottom:3px solid var(--ink);display:flex;align-items:center;justify-content:space-between;padding:0 14px}
-    .grid{height:calc(100vh - 114px);display:grid;grid-template-columns:210px 1fr 220px;gap:10px;padding:10px}
-    .pn{background:var(--cream);border:3px solid var(--ink);border-radius:14px;box-shadow:3px 3px 0 var(--ink);overflow:auto}
-    .left h3,.right h3{margin:8px 10px;font-size:18px}
-    .mid{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(#d9ffd0,#d4f3ff)}
-    .cup{width:180px;height:180px;border:3px solid var(--ink);border-radius:50%;background:#fff;box-shadow:4px 4px 0 var(--ink);font-size:80px;display:grid;place-items:center;cursor:pointer;transition:.1s transform,.1s box-shadow}
-    .cup:hover,.btn:hover{transform:translateY(-2px);box-shadow:5px 5px 0 var(--ink)} .cup:active,.btn:active{transform:translateY(1px)}
-    .goldGlow{box-shadow:0 0 25px #ffd84e, 4px 4px 0 var(--ink)!important}
-    .scene{position:absolute;inset:0;pointer-events:none;overflow:hidden}
-    .cat{position:absolute;font-size:40px;animation:wander 16s linear infinite}
-    @keyframes wander{0%{left:-40px;top:68%}50%{left:55%;top:72%}100%{left:100%;top:67%}}
-    .bshimmer{position:absolute;left:10px;right:10px;bottom:20px;height:70px;border:3px solid var(--ink);border-radius:14px;background:#fff7d2;opacity:0}
-    .legacy .bshimmer{opacity:1;animation:sh 2s infinite alternate}
-    @keyframes sh{from{box-shadow:0 0 5px #ffe694}to{box-shadow:0 0 22px #ffd84e}}
-    .coin{position:absolute;animation:fc 1s forwards;font-weight:800}
-    @keyframes fc{to{transform:translateY(-35px);opacity:0}}
-    .sec{margin:8px;border:3px solid var(--ink);border-radius:12px;overflow:hidden}
-    .head{padding:6px 8px;background:var(--yellow);cursor:pointer;display:flex;justify-content:space-between;font-weight:800}
-    .body{padding:6px;display:block}
-    .body.closed{display:none}
-    .card{border:3px solid var(--ink);border-radius:12px;padding:6px;margin-bottom:6px;background:#fff;box-shadow:2px 2px 0 var(--ink)}
-    .spec{background:#fff4c7;border-color:#b8860b}
-    .dim{opacity:.5}
-    .fl{font-family:Nunito,sans-serif;font-size:12px}
-    .dots{font-size:12px}
-    .btn{border:3px solid var(--ink);border-radius:10px;background:var(--orange);padding:4px 8px;cursor:pointer;font-family:'Baloo 2';font-weight:700;box-shadow:3px 3px 0 var(--ink)}
-    .nav{height:60px;background:var(--cream);border-top:3px solid var(--ink);display:flex;gap:8px;align-items:center;justify-content:center}
-    .nb{min-width:110px}
-    .timeline{padding:8px}.tl{padding:6px;border:3px solid var(--ink);border-radius:10px;margin-bottom:8px;background:#fff;cursor:pointer}
-    .locked{opacity:.45;cursor:not-allowed}
-    .prog{height:16px;background:#fff;border:3px solid var(--ink);border-radius:9px;overflow:hidden}.bar{height:100%;background:var(--teal)}
-    .ov{position:fixed;inset:0;background:#0009;display:none;align-items:center;justify-content:center;z-index:40}
-    .ov.show{display:flex}
-    .mod{width:min(760px,92vw);background:var(--cream);border:3px solid var(--ink);border-radius:16px;box-shadow:6px 6px 0 var(--ink);padding:18px;animation:pop .25s}
-    @keyframes pop{0%{transform:scale(.9);opacity:0}70%{transform:scale(1.05)}100%{transform:scale(1);opacity:1}}
-    .sc{font-size:48px;text-align:center}
+    :root{--cream:#fff3de;--coffee:#5f3b27;--orange:#ffad56;--dark:#331d11;--mint:#9ee6d8}
+    *{box-sizing:border-box}body{margin:0;font-family:Nunito,sans-serif;background:linear-gradient(#ffe9c8,#ffd7aa);color:var(--dark)}
+    h1,h2,h3,.brand{font-family:Fredoka,sans-serif} .hidden{display:none!important}
+    .btn{border:3px solid var(--dark);border-radius:12px;background:var(--orange);font-family:Fredoka;padding:8px 12px;cursor:pointer;box-shadow:3px 3px 0 var(--dark)}
+    .btn:active{transform:translateY(1px)} .btn.sub{background:#fff}
+    .top{height:58px;display:flex;justify-content:space-between;align-items:center;padding:0 12px;background:var(--cream);border-bottom:3px solid var(--dark)}
+    .layout{display:grid;grid-template-columns:240px 1fr 280px;height:calc(100vh - 116px);gap:10px;padding:10px}
+    .panel{background:var(--cream);border:3px solid var(--dark);border-radius:14px;padding:8px;box-shadow:3px 3px 0 var(--dark);overflow:auto}
+    .center{position:relative;display:flex;align-items:center;justify-content:center;background:linear-gradient(#fff7e6,#ffefd8)}
+    .cup{font-size:92px;width:210px;height:210px;border-radius:50%;border:4px solid var(--dark);display:grid;place-items:center;background:#fff;cursor:pointer;transition:.12s}
+    .cup:active{transform:scale(.95)} .coin{position:absolute;font-weight:800;animation:pop 1s forwards}
+    @keyframes pop{to{transform:translateY(-60px);opacity:0}} .row{display:flex;gap:8px;flex-wrap:wrap}
+    .card{border:3px solid var(--dark);border-radius:12px;background:#fff;padding:8px;margin-bottom:8px}
+    .nav{height:58px;display:flex;gap:8px;align-items:center;justify-content:center;background:var(--cream);border-top:3px solid var(--dark)}
+    .xp{height:16px;border:3px solid var(--dark);border-radius:10px;background:#fff;overflow:hidden}.xp>div{height:100%;background:var(--mint)}
+    .overlay{position:fixed;inset:0;background:#0008;display:flex;align-items:center;justify-content:center;z-index:20}
+    .modal{width:min(900px,94vw);max-height:92vh;overflow:auto;background:var(--cream);border:3px solid var(--dark);border-radius:16px;box-shadow:6px 6px 0 var(--dark);padding:16px}
+    input,textarea,select{width:100%;border:2px solid var(--dark);border-radius:10px;padding:8px;font:inherit;margin:4px 0 8px}
+    .slot{width:31%;min-width:220px}.muted{opacity:.7;font-size:12px}
   </style>
 </head>
 <body>
-  <div class="top"><div>☕ Café Clicker</div><div id="stats">Coins: 0 | CPC 1 | CPS 0</div></div>
-  <div class="grid">
-    <aside class="pn left"><h3>🛒 Shop</h3><div id="shop"></div></aside>
-    <main class="pn mid" id="mid"><div class="scene" id="scene"></div><button class="cup" id="cup">☕</button></main>
-    <aside class="pn right"><h3 id="rt">📜 Feed</h3><div id="feed" class="timeline"></div><div id="story" class="timeline" style="display:none"></div></aside>
+  <div id="auth" class="overlay">
+    <div class="modal">
+      <h2>☕ Brew Empire Account</h2>
+      <div class="row">
+        <button class="btn" id="showLogin">Login</button>
+        <button class="btn sub" id="showSignup">Sign up</button>
+      </div>
+      <div id="loginBox">
+        <label>Username</label><input id="liUser" />
+        <label>Password</label><input id="liPass" type="password" />
+        <button class="btn" id="loginBtn">Enter Café</button>
+      </div>
+      <div id="signupBox" class="hidden">
+        <label>Username</label><input id="suUser" />
+        <label>Email</label><input id="suEmail" type="email" />
+        <label>Password</label><input id="suPass" type="password" />
+        <button class="btn" id="signupBtn">Create Account</button>
+      </div>
+      <p id="authMsg" class="muted"></p>
+    </div>
   </div>
-  <div class="nav"><button class="btn nb" data-tab="feed">📰 Feed</button><button class="btn nb" data-tab="story">📖 Story</button></div>
 
-  <div class="ov" id="storyModal"><div class="mod"><div id="chlbl"></div><div class="sc" id="chs"></div><h2 id="cht"></h2><p id="chtxt" style="font-family:Nunito"></p><button class="btn" id="storyContinue">Continue →</button></div></div>
-  <div class="ov" id="offerModal"><div class="mod"><h2>The Offer</h2><p style="font-family:Nunito">A corporate representative offers to buy your café legacy.</p><button class="btn" id="ref">Refuse 💪</button> <button class="btn" id="acc">Accept 💰</button></div></div>
+  <div id="slotScreen" class="overlay hidden">
+    <div class="modal">
+      <h2>Choose a Café Slot</h2>
+      <div id="slotCards" class="row"></div>
+      <button class="btn sub" id="logoutBtn">Logout</button>
+    </div>
+  </div>
+
+  <div id="profileScreen" class="overlay hidden">
+    <div class="modal">
+      <h2>Public Profile</h2>
+      <div class="row">
+        <div style="flex:1;min-width:260px">
+          <label>Bio</label><textarea id="bio"></textarea>
+          <label>Catchphrase</label><input id="catchphrase" />
+          <button class="btn" id="saveProfile">Save Profile</button>
+          <p class="muted" id="profileStats"></p>
+        </div>
+        <div style="flex:1;min-width:260px">
+          <h3>My 3 Café Slots</h3>
+          <div id="profileSlots"></div>
+        </div>
+      </div>
+      <button class="btn sub" id="closeProfile">Close</button>
+    </div>
+  </div>
+
+  <div class="top">
+    <div class="brand">☕ Brew Empire</div>
+    <div id="stats">Coins: 0 | CPC 1 | CPS 0</div>
+  </div>
+  <div class="layout">
+    <aside class="panel"><h3>Shop</h3><div id="shop"></div></aside>
+    <main class="panel center" id="center"><button id="cup" class="cup">☕</button></main>
+    <aside class="panel"><h3>Feed</h3><div id="feed"></div></aside>
+  </div>
+  <div class="nav">
+    <button class="btn" id="openProfile">👤 Profile</button>
+    <button class="btn sub" id="manualSave">💾 Save</button>
+    <button class="btn sub" id="switchSlot">🗂️ Switch Slot</button>
+    <button class="btn sub" id="resetSlot">♻️ Reset Slot</button>
+  </div>
+
   <script>
-    const KEY='cafeClicker_v3';
-    const STAFF=[
-      {id:'jules',n:'Head Barista "Jules"',i:'👩‍🍳',base:500,cps:3,cpc:1,f:'Jules knows every regular by name. Possibly psychic.'},
-      {id:'benny',n:'Pastry Chef "Benny"',i:'👨‍🍳',base:1200,cps:2,cpc:0,f:'Benny once made a croissant so good a customer cried.'},
-      {id:'skye',n:'Delivery Driver "Skye"',i:'🛵',base:3000,cps:5,cpc:0,f:'Skye delivers in rain, snow, and apparently during alien invasions.'},
-      {id:'dot',n:'Social Media Manager "Dot"',i:'📱',base:8000,cps:8,cpc:0,f:'Dot turned a latte art photo into 40,000 followers overnight.'},
-      {id:'remy',n:'Night Shift Barista "Remy"',i:'🌙',base:15000,cps:12,cpc:0,f:'Remy only works after dark. Nobody asks why.'}
-    ];
-    const EQUIP={espresso:[{n:'Basic Espresso Machine',c:800,cps:3,i:'☕'},{n:'Pro Espresso Machine',c:5000,cps:10,i:'⚙️☕'},{n:'Competition Espresso Machine',c:25000,cps:30,cpc:5,i:'🏆☕'}],
-      grinder:[{n:'Hand Grinder',c:600,cps:2,i:'🫙'},{n:'Electric Grinder',c:3500,cps:7,i:'⚙️'},{n:'Precision Burr Grinder',c:18000,cps:20,i:'🎯'}],
-      seating:[{n:'Bar Stools',c:1000,tip:0,i:'🪑',cap:2},{n:'Cozy Booths',c:6000,tip:.1,i:'🛋️',cap:4},{n:'Rooftop Terrace',c:30000,tip:0,i:'🌇',cap:8,sun:1.5}],
-      wifi:[{n:'Basic Wifi',c:500,i:'📶'},{n:'Fast Fiber',c:4000,cps:3,i:'🌐'},{n:'Gigabit Café Network',c:20000,cps:10,i:'🚀'}]};
-    const SPECIAL=[
-      {id:'goldenCup',n:'Golden Coffee Cup',c:100000,i:'🏆',b:'+50% to all coin earnings permanently',f:'Rumored to be cursed. The bonus is real though.'},
-      {id:'cafecat',n:'Café Cat "Mochi"',c:50000,i:'🐱',b:'Every 60s Mochi doubles a random customer tip',f:'Mochi showed up one day and never left. Best hire you never made.'},
-      {id:'roaster',n:'Bean Roaster',c:75000,i:'🔥',b:'All farm harvests give 3× farm bonus',f:'The smell is overwhelming. Customers love it. You love it. Everyone loves it.'},
-      {id:'safelock',n:'Time-Lock Safe',c:40000,i:'🔐',b:'Every 5 minutes auto-collects 10 minutes of passive CPS',f:'Tick tock. Money o\'clock.'},
-      {id:'hauntedMachine',n:'Haunted Espresso Machine',c:66666,i:'👻☕',b:'Ghost customers appear 5× more often, each worth 5× tips',f:'It makes the espresso. Nobody is sure how.',halloween:true}
-    ];
-    const CH=[
-      {id:1,c:0,t:'A Fresh Start',s:'🏠☕🌅',x:`You've inherited a tiny café on Maple Street from your grandmother.\nIt's dusty, the espresso machine is older than you, and the sign is missing\ntwo letters. But it smells like coffee and possibility.\nTime to open for business.`},
-      {id:2,c:1000,t:'The First Regular',s:'😊☕📰',x:`A man named Gerald shows up every morning at 7am sharp.\nHe orders the same thing every time — black coffee, no sugar.\nHe never says much. But one day he leaves a note:\n'Best coffee on the street. Don't change a thing.'\nYou have one regular. That's enough.`},
-      {id:3,c:10000,t:'Trouble on Maple Street',s:'🏪😤🪧',x:`A new café opens across the street. It's called BEANSTORM.\nTheir sign is bigger than your entire building.\nThey have a loyalty app. They have a DJ on Fridays.\nThey have seventeen types of oat milk.\nThis is war.`},
-      {id:4,c:50000,t:'Allies',s:'📚🥐🌸🤝',x:`The bookshop owner, the baker, and the florist knock on your door\none rainy Tuesday. They've all been losing customers to BEANSTORM too.\n'Together we're something,' says the florist, whose name is Priya.\nYou make them all a coffee. It's the best meeting you've ever had.`},
-      {id:5,c:100000,t:'The Inspector Cometh',s:'🏥📋😰',x:`The health inspector arrives on the worst possible day.\nThere's flour everywhere, Benny is asleep on the pastry counter,\nand the cat is sitting in the tip jar.\nSomehow, you pass. The inspector gives you a B+.\nGerald says a B+ is better than BEANSTORM's C-. You frame the certificate.`},
-      {id:6,c:250000,t:'Going Viral',s:'📱🌍⭐💥',x:`Dot posts a video of Mochi the cat knocking a latte off the counter.\nBy morning it has 2 million views.\nBy afternoon there's a queue around the block.\nBy evening you've run out of cups, milk, hope, and chairs.\nGerald got here at 6am. He has a reserved seat now.`},
-      {id:7,c:500000,t:'The Offer',s:'💼💰😐',x:`A man in a very expensive coat visits at closing time.\nHe represents BEANSTORM's parent company.\nHe slides a card across the counter with a number on it.\nIt has a lot of zeros. You make him a coffee.\nYou think about your grandmother. You think about Gerald.\nYou slide the card back.`},
-      {id:8,c:1000000,t:'The Storm',s:'⛈️🕯️🏠❤️',x:`The worst storm in years hits Maple Street.\nPower goes out. The espresso machine dies.\nYou light candles. Somehow everyone still comes.\nJules makes cold brew by torchlight.\nRemy delivers in the rain without being asked.\nYou realize this café isn't just a business.\nIt's a place people need.`},
-      {id:9,c:5000000,t:'Maple Street Fights Back',s:'🏘️🎉🏆🌟',x:`BEANSTORM closes its Maple Street location.\nA food critic calls your café 'the soul of the neighborhood.'\nThe bookshop expands. The bakery wins a regional award.\nPriya's flowers are in three wedding magazines.\nGerald orders a latte for the first time. Just the once.\n'Don't read into it,' he says.`},
-      {id:10,c:10000000,t:'The Last Cup',s:'🌅☕✨🏠💛',x:`You sit at the counter after closing on the café's anniversary.\nThe same counter your grandmother sat at.\nThe espresso machine hums — the new one, the competition one.\nThe street is quiet. The sign is fixed. All the letters are there.\nMochi is asleep on the pastry case.\nGerald left his scarf on his usual stool again.\nYou make one last coffee, just for yourself.\nIt's perfect.`}
-    ];
-    const $=s=>document.querySelector(s); const shop=$('#shop'), feed=$('#feed'), story=$('#story'), scene=$('#scene');
-    const isHalloween=()=>{const d=new Date();return d.getMonth()===9}; const isNight=()=>{const h=new Date().getHours();return h<6||h>=18};
-    const DS=()=>({coins:0,lifetime:0,cpc:1,cps:0,hist:[],upgrades:{marketing:0},weather:'sunny',touristMul:1,neighborhoodMul:1,rivalWeak:false,legacyDrink:false,
-      staff:{jules:0,benny:0,skye:0,dot:0,remy:0},equipment:{espresso:0,grinder:0,seating:0,wifi:0},specials:{goldenCup:false,cafecat:false,roaster:false,safelock:false,hauntedMachine:false},
-      storyChaptersSeen:[],storyUnlocked:1,storyOfferChoice:null,safelockLastCollect:0,badges:[]});
-    let S=Object.assign(DS(),JSON.parse(localStorage.getItem(KEY)||'{}')); S.staff={...DS().staff,...(S.staff||{})}; S.equipment={...DS().equipment,...(S.equipment||{})}; S.specials={...DS().specials,...(S.specials||{})};
-    S.storyChaptersSeen=S.storyChaptersSeen||[];
-    const save=()=>localStorage.setItem(KEY,JSON.stringify(S));
-    const addHist=t=>{S.hist.unshift(`${new Date().toLocaleTimeString()} ${t}`);S.hist=S.hist.slice(0,40);renderFeed();};
-    const toast=(t,d)=>addHist(`${t}: ${d}`); const confetti=()=>{}; const snd=()=>{}; const checkAch=()=>{};
-    function mult(){let m=1;if(S.specials.goldenCup)m*=1.5;if(S.equipment.seating>=3&&S.weather==='sunny')m*=1.5;return m}
-    function cpc(){let v=S.cpc+STAFF.reduce((a,s)=>a+S.staff[s.id]*s.cpc,0);if(S.equipment.espresso>=3)v+=5;if(S.legacyDrink)v*=15;return Math.floor(v*mult())}
-    function cps(){let v=S.cps+STAFF.reduce((a,s)=>a+S.staff[s.id]*s.cps,0);if(isNight())v+=S.staff.remy*12;Object.entries(EQUIP).forEach(([k,arr])=>{const t=S.equipment[k];for(let i=0;i<t;i++)v+=(arr[i].cps||0)});if(S.staff.dot>0)v+=S.upgrades.marketing*2;return Math.floor(v*mult())}
-    function coin(n){S.coins+=n;S.lifetime+=n;checkStory();update();save();}
-    function floatCoin(x,y,t){const n=document.createElement('div');n.className='coin';n.style.left=x+'px';n.style.top=y+'px';n.textContent=t;scene.appendChild(n);setTimeout(()=>n.remove(),1000)}
-    $('#cup').onclick=e=>{const g=cpc();coin(g);floatCoin(e.clientX-20,e.clientY-20,`+${g}`);snd('click')};
-    setInterval(()=>{const g=Math.floor(cps()/5);if(g>0)coin(g);if(S.specials.cafecat&&Date.now()%60000<220){const tip=Math.max(10,Math.floor(cpc()*2));coin(tip);toast('Mochi bonus',`Mochi doubled a tip (+${tip})`)}
-      if(S.specials.safelock){if(!S.safelockLastCollect)S.safelockLastCollect=Date.now();if(Date.now()-S.safelockLastCollect>300000){const b=Math.floor(cps()*600);coin(b);S.safelockLastCollect=Date.now();toast('Time-Lock Safe',`Collected ${b} coins`);}}
-    },200);
-    function renderFeed(){feed.innerHTML=S.hist.map(h=>`<div class='tl'>${h}</div>`).join('')||"<div class='tl'>History feed waiting for your first big moment...</div>"}
-    function renderShop(){
-      const sec=[['👥 Staff','staff'],['⚙️ Equipment','eq'],['✨ Specials','sp'],['🪴 Decorations','ph'],['⬆️ Upgrades','ph2']];
-      shop.innerHTML=sec.map(([n,id])=>`<div class='sec'><div class='head' data-t='${id}'>${n}<span>▾</span></div><div id='${id}' class='body'></div></div>`).join('');
-      STAFF.forEach(s=>{const lvl=S.staff[s.id],cost=Math.floor(s.base*Math.pow(1.8,lvl)*(s.id==='dot'&&S.equipment.wifi>=3?.8:1)),can=S.coins>=cost&&lvl<10;
-        $('#staff').insertAdjacentHTML('beforeend',`<div class='card ${can?'':'dim'}'><div>${s.i} <b>${s.n}</b></div><div class='fl'>${s.f}</div><div class='fl'>+${s.cps} CPS/lvl${s.cpc?` • +${s.cpc} CPC/lvl`:''}${s.id==='skye'?' • +15% tips at lvl 5':''}${s.id==='dot'?' • doubles marketing upgrade effect':''}${s.id==='remy'?' • active at night only':''}</div><div class='dots'>${'●'.repeat(lvl)}${'○'.repeat(10-lvl)}</div><button class='btn' data-bs='${s.id}'>Hire/Level (${cost})</button></div>`);
-      });
-      Object.entries(EQUIP).forEach(([k,arr])=>{const tier=S.equipment[k],nx=arr[tier],can=nx&&S.coins>=nx.c;
-        $('#eq').insertAdjacentHTML('beforeend',`<div class='card ${can?'':'dim'}'><div><b>${k[0].toUpperCase()+k.slice(1)}</b> — Tier ${tier}/3</div><div class='fl'>${tier?`Owned: ${arr[tier-1].i} ${arr[tier-1].n}`:'Not owned yet'}</div>${nx?`<div class='fl'>Next: ${nx.i} ${nx.n} • ${nx.c}🪙</div><div class='fl'>Bonus: +${nx.cps||0} CPS ${nx.cpc?`• +${nx.cpc} CPC`:''}${nx.cap?`• +${nx.cap} customer capacity`:''}${nx.tip?`• +${Math.round(nx.tip*100)}% tip multiplier`:''}${k==='wifi'&&tier===0?'• attracts Hipsters more often':''}${k==='wifi'&&tier===1?'• attracts Business Person more often':''}${k==='grinder'&&tier===2?'• unlocks Liberica bean in farm':''}${k==='seating'&&tier===2?'• sunny weather bonus x1.5':''}</div><button class='btn' data-be='${k}'>Upgrade →</button>`:'<div class="fl">Max tier reached</div>'}</div>`)
-      });
-      SPECIAL.filter(x=>!x.halloween||isHalloween()).forEach(s=>{const own=S.specials[s.id],can=S.coins>=s.c&&!own;
-        $('#sp').insertAdjacentHTML('beforeend',`<div class='card spec ${can||own?'':'dim'}'><div>${s.i} <b>${s.n}</b></div><div class='fl'>${s.b}</div><div class='fl'>${s.f}</div><button class='btn' data-bsp='${s.id}'>${own?'Owned':'Buy '+s.c+'🪙'}</button></div>`)
-      });
-      ['ph','ph2'].forEach(id=>$('#'+id).innerHTML="<div class='card'><div class='fl'>Existing game section preserved.</div></div>");
-      shop.querySelectorAll('.head').forEach(h=>h.onclick=()=>h.nextElementSibling.classList.toggle('closed'));
-      shop.querySelectorAll('[data-bs]').forEach(b=>b.onclick=()=>buyStaff(b.dataset.bs));
-      shop.querySelectorAll('[data-be]').forEach(b=>b.onclick=()=>buyEquip(b.dataset.be));
-      shop.querySelectorAll('[data-bsp]').forEach(b=>buySpecial(b.dataset.bsp));
+    const ACCOUNT_KEY='brew_empire_accounts_v1';
+    let activeUser=null, activeSlot=0, GAME_KEY='';
+    const $=s=>document.querySelector(s);
+    const DS=()=>({cafeName:'My Café',coins:0,lifetime:0,cpc:1,cps:0,level:1,xp:0,review:3.5,theme:'Classic',decorScore:0,hist:[],upgrades:{barista:0,machine:0}});
+    let S=DS();
+
+    const loadAccounts=()=>JSON.parse(localStorage.getItem(ACCOUNT_KEY)||'{}');
+    const saveAccounts=a=>localStorage.setItem(ACCOUNT_KEY,JSON.stringify(a));
+    const xpNeed=l=>l<=10?100:l<=20?300:l<=30?800:l<=40?2000:l<=50?5000:l<=60?12000:l<=70?30000:l<=80?75000:l<=90?200000:500000;
+
+    function defaultSlots(){return [1,2,3].map(i=>({id:i,name:`Café Slot ${i}`,isMain:i===1,lastTransferDay:'',saveKey:''}));}
+    function getAccount(username){const db=loadAccounts();return db[username]||null;}
+    function setAccount(acc){const db=loadAccounts();db[acc.username]=acc;saveAccounts(db);}
+
+    function flash(msg){S.hist.unshift(new Date().toLocaleTimeString()+` — ${msg}`);S.hist=S.hist.slice(0,24);renderFeed();}
+    function saveGame(){if(!GAME_KEY)return;localStorage.setItem(GAME_KEY,JSON.stringify(S));flash('Auto-saved.');syncSlotMeta();}
+    function syncSlotMeta(){if(!activeUser)return;const acc=getAccount(activeUser.username);const slot=acc.slots[activeSlot];slot.saveKey=GAME_KEY;slot.name=S.cafeName;slot.review=S.review;slot.theme=S.theme;setAccount(acc);}
+
+    function gainXP(v){S.xp+=v;while(S.xp>=xpNeed(S.level)){S.xp-=xpNeed(S.level);S.level++;flash(`Level up! Lv.${S.level}`);} }
+    function cpc(){return S.cpc+S.upgrades.barista*2+S.upgrades.machine*4;}
+    function cps(){return S.cps+S.upgrades.barista*2+S.upgrades.machine*5;}
+    function coin(v){S.coins+=v;S.lifetime+=v;gainXP(v*0.1);render();}
+
+    function render(){
+      $('#stats').innerHTML=`Coins: ${Math.floor(S.coins).toLocaleString()} | CPC ${cpc()} | CPS ${cps()} | Lv ${S.level}`;
+      $('#shop').innerHTML=`
+        <div class='card'><b>Extra Barista</b><div class='muted'>+2 CPC +2 CPS</div><button class='btn' data-u='barista'>Buy ${Math.floor(100*Math.pow(1.7,S.upgrades.barista))}</button></div>
+        <div class='card'><b>Espresso Machine</b><div class='muted'>+4 CPC +5 CPS</div><button class='btn' data-u='machine'>Buy ${Math.floor(200*Math.pow(1.8,S.upgrades.machine))}</button></div>
+        <div class='card'><label>Café Name</label><input id='cafeName' value="${S.cafeName.replace(/"/g,'&quot;')}"></div>
+        <div class='card'><div>XP</div><div class='xp'><div style='width:${(S.xp/xpNeed(S.level))*100}%'></div></div><div class='muted'>${Math.floor(S.xp)} / ${xpNeed(S.level)}</div></div>`;
+      document.querySelectorAll('[data-u]').forEach(b=>b.onclick=()=>buyUpgrade(b.dataset.u));
+      $('#cafeName').onchange=e=>{S.cafeName=e.target.value||'My Café';syncSlotMeta();};
+      renderFeed();
     }
-    function buyStaff(id){const x=STAFF.find(a=>a.id===id),lvl=S.staff[id];if(lvl>=10)return;const c=Math.floor(x.base*Math.pow(1.8,lvl)*(id==='dot'&&S.equipment.wifi>=3?.8:1));if(S.coins<c)return;S.coins-=c;S.staff[id]++;if(id==='benny'&&S.staff.benny===3)addHist('Pastry Case decoration unlocked!');if(id==='skye'&&S.staff.skye===5)addHist('Skye unlocked +15% tip multiplier.');snd('buy');save();update();}
-    function buyEquip(k){const t=S.equipment[k],n=EQUIP[k][t];if(!n||S.coins<n.c)return;S.coins-=n.c;S.equipment[k]++;if(k==='grinder'&&S.equipment.grinder===3)addHist('Liberica bean unlocked in farm.');snd('buy');save();update();}
-    function buySpecial(id){const s=SPECIAL.find(x=>x.id===id);if(!s||S.specials[id]||S.coins<s.c)return;S.coins-=s.c;S.specials[id]=true;if(id==='goldenCup')$('#cup').classList.add('goldGlow');if(id==='cafecat')scene.insertAdjacentHTML('beforeend',`<div class='cat'>🐱</div>`);snd('success');toast('Purchased',s.n);save();update();}
-    function renderStory(){
-      const unlocked=CH.filter(c=>S.lifetime>=c.c).length;S.storyUnlocked=Math.max(1,unlocked);
-      story.innerHTML=`<div><b>Chapter ${S.storyUnlocked} / 10</b><div class='prog'><div class='bar' style='width:${S.storyUnlocked*10}%'></div></div></div>`+
-        CH.map(c=>{const u=S.lifetime>=c.c;return `<div class='tl ${u?'':'locked'}' data-ch='${c.id}'><div><b>Chapter ${c.id}</b> ${u?c.s:'🔒'}</div><div>${c.t}</div><div class='fl'>${u?c.x.split('\n')[0]:'Unlock at '+c.c.toLocaleString()+' lifetime coins'}</div></div>`}).join('');
-      story.querySelectorAll('[data-ch]').forEach(n=>n.onclick=()=>{const id=+n.dataset.ch,c=CH.find(x=>x.id===id);if(S.lifetime<c.c)return;openStory(c)});
+
+    function renderFeed(){ $('#feed').innerHTML=S.hist.map(x=>`<div class='card'>${x}</div>`).join('')||"<div class='muted'>Welcome to Brew Empire.</div>"; }
+    function buyUpgrade(k){const level=S.upgrades[k];const base=k==='barista'?100:200;const scale=k==='barista'?1.7:1.8;const cost=Math.floor(base*Math.pow(scale,level));if(S.coins<cost)return;S.coins-=cost;S.upgrades[k]++;gainXP(50);flash(`Bought ${k}.`);render();}
+
+    $('#cup').onclick=e=>{const v=cpc();coin(v);gainXP(0.1);const n=document.createElement('div');n.className='coin';n.textContent=`+${v}`;n.style.left=(e.offsetX+120)+'px';n.style.top=(e.offsetY+120)+'px';$('#center').appendChild(n);setTimeout(()=>n.remove(),900);};
+    setInterval(()=>{if(GAME_KEY){coin(cps());}},1000);
+    setInterval(()=>{if(GAME_KEY)saveGame();},30000);
+    addEventListener('beforeunload',()=>{if(GAME_KEY)saveGame(); if(activeUser){const acc=getAccount(activeUser.username);acc.lastSeen=new Date().toISOString();setAccount(acc);}});
+
+    function enterSlot(idx){activeSlot=idx;GAME_KEY=`brew_empire_${activeUser.username}_slot_${idx}`;S=Object.assign(DS(),JSON.parse(localStorage.getItem(GAME_KEY)||'{}'));$('#auth').classList.add('hidden');$('#slotScreen').classList.add('hidden');render();flash(`Loaded ${activeUser.slots[idx].name}`);syncSlotMeta();}
+
+    function renderSlots(){const acc=getAccount(activeUser.username);activeUser=acc;$('#slotCards').innerHTML=acc.slots.map((s,i)=>`<div class='card slot'><b>${s.name}</b>${s.isMain?" ⭐ Main":""}<div class='muted'>Theme: ${s.theme||'Classic'} • Review: ${(s.review||3.5).toFixed? (s.review||3.5).toFixed(1):s.review||3.5}</div><div class='row'><button class='btn' data-play='${i}'>Play</button><button class='btn sub' data-main='${i}'>Set Main</button><button class='btn sub' data-del='${i}'>Delete</button></div></div>`).join('');
+      document.querySelectorAll('[data-play]').forEach(b=>b.onclick=()=>enterSlot(+b.dataset.play));
+      document.querySelectorAll('[data-main]').forEach(b=>{b.onclick=()=>{acc.slots.forEach(x=>x.isMain=false);acc.slots[+b.dataset.main].isMain=true;setAccount(acc);renderSlots();};});
+      document.querySelectorAll('[data-del]').forEach(b=>{b.onclick=()=>{const i=+b.dataset.del;if(confirm('Delete this slot and restart it?')){localStorage.removeItem(`brew_empire_${acc.username}_slot_${i}`);acc.slots[i]={id:i+1,name:`Café Slot ${i+1}`,isMain:acc.slots[i].isMain,saveKey:''};setAccount(acc);renderSlots();}}});
     }
-    const q=[];let modalBusy=false;
-    function openStory(c){$('#chlbl').textContent=`Chapter ${c.id} / 10`;$('#chs').textContent=c.s;$('#cht').textContent=c.t;$('#chtxt').textContent=c.x;$('#storyModal').classList.add('show');modalBusy=true}
-    $('#storyContinue').onclick=()=>{$('#storyModal').classList.remove('show');modalBusy=false;showQueued()};
-    function showQueued(){if(modalBusy||!q.length)return;const n=q.shift();if(n.type==='chapter')openStory(n.c);if(n.type==='offer'){$('#offerModal').classList.add('show');modalBusy=true;}}
-    function checkStory(){
-      CH.forEach(c=>{if(S.lifetime>=c.c&&!S.storyChaptersSeen.includes(c.id)){S.storyChaptersSeen.push(c.id);q.push({type:'chapter',c});applyStory(c.id);}});
-      showQueued();
+
+    function openProfile(){const acc=getAccount(activeUser.username);acc.visits=(acc.visits||0)+1;setAccount(acc);$('#bio').value=acc.profile?.bio||'';$('#catchphrase').value=acc.profile?.catchphrase||'';$('#profileStats').textContent=`User: ${acc.username} • Created: ${new Date(acc.createdAt).toLocaleDateString()} • Last seen: ${acc.lastSeen?new Date(acc.lastSeen).toLocaleString():'Now'} • Login streak: ${acc.loginStreak||1}`;
+      $('#profileSlots').innerHTML=acc.slots.map(s=>`<div class='card'><b>${s.name}</b>${s.isMain?' ⭐ Main':''}<div class='muted'>Theme: ${s.theme||'Classic'} • Review: ${((s.review||3.5).toFixed? (s.review||3.5).toFixed(1):s.review||3.5)}</div></div>`).join('');
+      $('#profileScreen').classList.remove('hidden');
     }
-    function applyStory(id){
-      if(id===3)addHist('New rival spotted: BEANSTORM Employee 😤 drops bonus cards!');
-      if(id===6){S.touristMul=2;addHist('Tourist frequency permanently increased x2.');}
-      if(id===7&&S.storyOfferChoice===null)q.push({type:'offer'});
-      if(id===9){S.rivalWeak=true;S.neighborhoodMul=1.5;addHist('Neighborhood bonuses increased by 50%.');}
-      if(id===10){S.legacyDrink=true;$('#mid').classList.add('legacy');addHist('Unlocked Legacy drink ☕✨ (15x multiplier)!');}
-      save();
-    }
-    $('#ref').onclick=()=>{if(S.storyOfferChoice)return;S.storyOfferChoice='refused';coin(500000);S.badges.push('Loyalty');addHist('You refused the offer and earned Loyalty badge.');$('#offerModal').classList.remove('show');modalBusy=false;showQueued();};
-    $('#acc').onclick=()=>{if(S.storyOfferChoice)return;S.storyOfferChoice='accepted';coin(2000000);addHist('Sellout 😔 — You accepted the buyout offer.');$('#offerModal').classList.remove('show');modalBusy=false;showQueued();};
-    function update(){
-      $('#stats').textContent=`Coins: ${Math.floor(S.coins).toLocaleString()} | CPC ${cpc()} | CPS ${cps()}`;
-      renderShop();renderStory();renderFeed();checkAch();
-      if(S.specials.goldenCup)$('#cup').classList.add('goldGlow');
-      if(S.specials.cafecat&&!scene.querySelector('.cat'))scene.insertAdjacentHTML('beforeend','<div class="cat">🐱</div>');
-      if(S.legacyDrink)$('#mid').classList.add('legacy');
-    }
-    document.querySelectorAll('.nb').forEach(b=>b.onclick=()=>{const t=b.dataset.tab;feed.style.display=t==='feed'?'block':'none';story.style.display=t==='story'?'block':'none';$('#rt').textContent=t==='story'?'📖 Story':'📜 Feed';});
-    checkStory();update();
+
+    function doLogin(){const u=$('#liUser').value.trim(),p=$('#liPass').value;const acc=getAccount(u);if(!acc||acc.password!==p){$('#authMsg').textContent='Invalid login.';return;} activeUser=acc;$('#slotScreen').classList.remove('hidden');renderSlots();}
+    function doSignup(){const u=$('#suUser').value.trim(),e=$('#suEmail').value.trim(),p=$('#suPass').value; if(!u||!e||!p)return $('#authMsg').textContent='Please fill all fields.'; if(getAccount(u))return $('#authMsg').textContent='Username already exists.'; const acc={username:u,password:p,email:e,createdAt:new Date().toISOString(),profile:{bio:'',catchphrase:''},slots:defaultSlots(),loginStreak:1,lastSeen:new Date().toISOString()}; setAccount(acc); $('#authMsg').textContent='Account created. Please login.';}
+
+    $('#showLogin').onclick=()=>{$('#loginBox').classList.remove('hidden');$('#signupBox').classList.add('hidden');};
+    $('#showSignup').onclick=()=>{$('#signupBox').classList.remove('hidden');$('#loginBox').classList.add('hidden');};
+    $('#loginBtn').onclick=doLogin; $('#signupBtn').onclick=doSignup;
+    $('#logoutBtn').onclick=()=>{activeUser=null;GAME_KEY='';$('#slotScreen').classList.add('hidden');$('#auth').classList.remove('hidden');};
+    $('#openProfile').onclick=()=>activeUser&&openProfile();
+    $('#closeProfile').onclick=()=>$('#profileScreen').classList.add('hidden');
+    $('#saveProfile').onclick=()=>{const acc=getAccount(activeUser.username);acc.profile={bio:$('#bio').value,catchphrase:$('#catchphrase').value};setAccount(acc);};
+    $('#switchSlot').onclick=()=>{if(!activeUser)return;saveGame();$('#slotScreen').classList.remove('hidden');renderSlots();};
+    $('#manualSave').onclick=()=>saveGame();
+    $('#resetSlot').onclick=()=>{if(confirm('Reset current slot?')){S=DS();saveGame();render();}};
+
+    // Limited daily transfer between own slots (+500 coins token)
+    document.addEventListener('keydown',e=>{if(e.key.toLowerCase()==='t'&&activeUser){const acc=getAccount(activeUser.username);const d=new Date().toDateString();const s=acc.slots[activeSlot];if(s.lastTransferDay===d){flash('Daily transfer already used today.');return;} const target=acc.slots.find((_,i)=>i!==activeSlot);if(!target)return;const targetKey=`brew_empire_${acc.username}_slot_${target.id-1}`;const targetState=Object.assign(DS(),JSON.parse(localStorage.getItem(targetKey)||'{}'));if(S.coins<500)return flash('Need 500 coins to transfer.');S.coins-=500;targetState.coins+=500;localStorage.setItem(targetKey,JSON.stringify(targetState));s.lastTransferDay=d;setAccount(acc);flash(`Transferred 500 coins to ${target.name}.`);render();}});
   </script>
 </body>
 </html>
