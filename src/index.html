@@ -32,23 +32,10 @@
 <body>
   <div id="auth" class="overlay">
     <div class="modal">
-      <h2>☕ Brew Empire Account</h2>
-      <div class="row">
-        <button class="btn" id="showLogin">Login</button>
-        <button class="btn sub" id="showSignup">Sign up</button>
-      </div>
-      <div id="loginBox">
-        <label>Username</label><input id="liUser" />
-        <label>Password</label><input id="liPass" type="password" />
-        <button class="btn" id="loginBtn">Enter Café</button>
-      </div>
-      <div id="signupBox" class="hidden">
-        <label>Username</label><input id="suUser" />
-        <label>Email</label><input id="suEmail" type="email" />
-        <label>Password</label><input id="suPass" type="password" />
-        <button class="btn" id="signupBtn">Create Account</button>
-      </div>
-      <p id="authMsg" class="muted"></p>
+      <h2>☕ Pick a Username</h2>
+      <label>Username</label><input id="usernameInput" />
+      <button class="btn" id="enterBtn">Enter Café</button>
+      <p id="authMsg" class="muted">Any username works.</p>
     </div>
   </div>
 
@@ -107,8 +94,10 @@
     const xpNeed=l=>l<=10?100:l<=20?300:l<=30?800:l<=40?2000:l<=50?5000:l<=60?12000:l<=70?30000:l<=80?75000:l<=90?200000:500000;
 
     function defaultSlots(){return [1,2,3].map(i=>({id:i,name:`Café Slot ${i}`,isMain:i===1,lastTransferDay:'',saveKey:''}));}
+    function accountTemplate(username){return {username,createdAt:new Date().toISOString(),profile:{bio:'',catchphrase:''},slots:defaultSlots(),loginStreak:1,lastSeen:new Date().toISOString()};}
     function getAccount(username){const db=loadAccounts();return db[username]||null;}
     function setAccount(acc){const db=loadAccounts();db[acc.username]=acc;saveAccounts(db);}
+    function ensureAccount(username){const existing=getAccount(username);if(existing)return existing;const acc=accountTemplate(username);setAccount(acc);return acc;}
 
     function flash(msg){S.hist.unshift(new Date().toLocaleTimeString()+` — ${msg}`);S.hist=S.hist.slice(0,24);renderFeed();}
     function saveGame(){if(!GAME_KEY)return;localStorage.setItem(GAME_KEY,JSON.stringify(S));flash('Auto-saved.');syncSlotMeta();}
@@ -152,12 +141,10 @@
       $('#profileScreen').classList.remove('hidden');
     }
 
-    function doLogin(){const u=$('#liUser').value.trim(),p=$('#liPass').value;const acc=getAccount(u);if(!acc||acc.password!==p){$('#authMsg').textContent='Invalid login.';return;} activeUser=acc;$('#slotScreen').classList.remove('hidden');renderSlots();}
-    function doSignup(){const u=$('#suUser').value.trim(),e=$('#suEmail').value.trim(),p=$('#suPass').value; if(!u||!e||!p)return $('#authMsg').textContent='Please fill all fields.'; if(getAccount(u))return $('#authMsg').textContent='Username already exists.'; const acc={username:u,password:p,email:e,createdAt:new Date().toISOString(),profile:{bio:'',catchphrase:''},slots:defaultSlots(),loginStreak:1,lastSeen:new Date().toISOString()}; setAccount(acc); $('#authMsg').textContent='Account created. Please login.';}
+    function enterWithUsername(){const username=$('#usernameInput').value.trim();if(!username){$('#authMsg').textContent='Please enter a username.';return;}activeUser=ensureAccount(username);$('#slotScreen').classList.remove('hidden');renderSlots();}
 
-    $('#showLogin').onclick=()=>{$('#loginBox').classList.remove('hidden');$('#signupBox').classList.add('hidden');};
-    $('#showSignup').onclick=()=>{$('#signupBox').classList.remove('hidden');$('#loginBox').classList.add('hidden');};
-    $('#loginBtn').onclick=doLogin; $('#signupBtn').onclick=doSignup;
+    $('#enterBtn').onclick=enterWithUsername;
+    $('#usernameInput').addEventListener('keydown',e=>{if(e.key==='Enter')enterWithUsername();});
     $('#logoutBtn').onclick=()=>{activeUser=null;GAME_KEY='';$('#slotScreen').classList.add('hidden');$('#auth').classList.remove('hidden');};
     $('#openProfile').onclick=()=>activeUser&&openProfile();
     $('#closeProfile').onclick=()=>$('#profileScreen').classList.add('hidden');
